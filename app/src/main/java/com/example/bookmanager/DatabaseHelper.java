@@ -21,8 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("CREATE TABLE author(_id INTEGER PRIMARY KEY AUTOINCREMENT, author_name TEXT)");
-        db.execSQL("CREATE TABLE work(_id INTEGER PRIMARY KEY AUTOINCREMENT, work_title TEXT, author_id INTEGER, FOREIGN KEY(author_id) REFERENCES author(_id))");
-        db.execSQL("CREATE TABLE book(_id INTEGER PRIMARY KEY AUTOINCREMENT, work_id INTEGER, book_number TEXT, buy INTEGER, read INTEGER, FOREIGN KEY(work_id) REFERENCES work(_id))");
+        db.execSQL("CREATE TABLE work(_id INTEGER PRIMARY KEY AUTOINCREMENT, work_title TEXT, author_id INTEGER, FOREIGN KEY(author_id) REFERENCES author(_id) ON DELETE CASCADE)");
+        db.execSQL("CREATE TABLE book(work_id INTEGER, book_number TEXT, bought INTEGER, read INTEGER, PRIMARY KEY(work_id, book_number), FOREIGN KEY(work_id) REFERENCES work(_id) ON DELETE CASCADE)");
         db.execSQL("INSERT INTO author(author_name) VALUES('神林長平')");
         db.execSQL("INSERT INTO author(author_name) VALUES('森博嗣')");
     }

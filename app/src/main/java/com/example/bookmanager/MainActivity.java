@@ -27,10 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
         Cursor cs = db.query("author",column,null,null,null,null,null,null);
         if(cs.moveToFirst()) {
-            for(int i=0;i<=cs.getColumnCount();i++) {
+            do {
                 author.add(cs.getString(0));
                 cs.moveToNext();
-            }
+            }while(!(cs.isLast()));
         }
         cs.close();
 
