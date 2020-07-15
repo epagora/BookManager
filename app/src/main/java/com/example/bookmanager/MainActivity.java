@@ -3,7 +3,6 @@ package com.example.bookmanager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -11,7 +10,7 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
-    private DatabaseHelper helper = null;
+    private DatabaseAdapter dbAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,19 +19,19 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayList<String> author = new ArrayList<>();
 
-        helper = new DatabaseHelper(this);
+        dbAdapter = new DatabaseAdapter(this);
+        dbAdapter.open();
 
-        SQLiteDatabase db = helper.getReadableDatabase();
         String [] column = {"author_name"};
 
-        Cursor cs = db.query("author",column,null,null,null,null,null,null);
+        Cursor cs = dbAdapter.getTable("author",column);
         if(cs.moveToFirst()) {
             do {
                 author.add(cs.getString(0));
-                cs.moveToNext();
-            }while(!(cs.isLast()));
+            }while (cs.moveToNext());
         }
         cs.close();
+        dbAdapter.close();
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,android.R.layout.simple_list_item_1,author);
         ListView list = findViewById(R.id.itemListView);
