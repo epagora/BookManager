@@ -34,13 +34,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter = new DatabaseAdapter(this);
         authorList = new ArrayList<>();
 
+//        dbAdapter.open();
+//        dbAdapter.save(1, "上巻", 1, 1);
+//        dbAdapter.save(1, "下巻", 1, 0);
+//        dbAdapter.close();
+
         loadAuthor();
 
         listView.setOnItemClickListener(this);
 
-        dbAdapter.open();
-        dbAdapter.save("膚の下",1);
-        dbAdapter.close();
+
     }
 
     @Override

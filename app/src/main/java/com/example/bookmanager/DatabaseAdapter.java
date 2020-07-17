@@ -100,7 +100,7 @@ public class DatabaseAdapter {
     }
 
     public Cursor search(String dbTable, String[] columns, String column, int id) {
-        return db.query(dbTable, columns, "column = ?", new String[]{String.valueOf(id)}, null, null, null);
+        return db.query(dbTable, columns, column + "= ?", new String[]{String.valueOf(id)}, null, null, null);
     }
 
     public void allDelete() {
@@ -176,13 +176,13 @@ public class DatabaseAdapter {
                     + "PRIMARY KEY(" + W_ID_B + "," + NUMBER_B + "), "
                     + "FOREIGN KEY(" + W_ID_B + ") REFERENCES " + TABLE_W + "(" + _ID_W + ") ON DELETE CASCADE);");
 
-            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('神林長平')");
-            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('森博嗣')");
-            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('宮部みゆき')");
-            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('伊坂幸太郎')");
-            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('膚の下','1')");
-            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('帝王の殻',1)");
-            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('戦闘妖精雪風',1)");
+//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('神林長平')");
+//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('森博嗣')");
+//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('宮部みゆき')");
+//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('伊坂幸太郎')");
+//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('膚の下','1')");
+//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('帝王の殻','1')");
+//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('戦闘妖精雪風','1')");
 
         }
 
