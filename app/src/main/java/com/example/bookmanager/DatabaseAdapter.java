@@ -95,12 +95,40 @@ public class DatabaseAdapter {
         }
     }
 
+    public void changeBought(int work_id, String book_number, int bought) {
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(BOUGHT_B, bought);
+            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
+            db.setTransactionSuccessful();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+        }
+    }
+
+    public void changeRead(int work_id, String book_number, int read) {
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(READ_B, read);
+            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
+            db.setTransactionSuccessful();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+        }
+    }
+
     public Cursor getTable(String dbTable, String[] columns) {
         return db.query(dbTable, columns, null, null, null, null, null);
     }
 
     public Cursor search(String dbTable, String[] columns, String column, int id) {
-        return db.query(dbTable, columns, column + "= ?", new String[]{String.valueOf(id)}, null, null, null);
+        return db.query(dbTable, columns, column + "=" + id, null, null, null, null);
     }
 
     public void allDelete() {
@@ -121,9 +149,9 @@ public class DatabaseAdapter {
         db.beginTransaction();
         try {
             if (dbTable.equals(TABLE_A)) {
-                db.delete(TABLE_A, "_ID_A = ?", new String[]{"id"});
+                db.delete(TABLE_A, _ID_A + "=" + id, null);
             }else if(dbTable.equals(TABLE_W)) {
-                db.delete(TABLE_W, "_ID_W = ?", new String[]{"id"});
+                db.delete(TABLE_W, _ID_W + "=" + id, null);
             }
             db.setTransactionSuccessful();
         }catch (Exception e) {
@@ -136,7 +164,7 @@ public class DatabaseAdapter {
     public void selectDelete(int id, String book_number) {
         db.beginTransaction();
         try {
-            db.delete(TABLE_B, "W_ID_B = ? and NUMBER_B = ?", new String[]{"id","book_number"});
+            db.delete(TABLE_B, W_ID_B + "=" + id + " and " + NUMBER_B + "=" + book_number, null);
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();

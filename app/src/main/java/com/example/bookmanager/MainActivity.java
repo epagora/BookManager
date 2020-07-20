@@ -10,19 +10,21 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
     List<AuthorTableItem> authorList;
     AuthorTableItem authorItem;
     ListView listView;
+    EditText editText;
     Intent intent;
 
     @Override
@@ -42,8 +44,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         loadAuthor();
 
         listView.setOnItemClickListener(this);
-
-
+        listView.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -54,6 +55,26 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent = new Intent(this,WorkActivity.class);
         intent.putExtra("authorId",authorId);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        authorItem = authorList.get(i);
+        int authorId = authorItem.getAuthorId();
+        dbAdapter.open();
+        dbAdapter.selectDelete("author", authorId);
+        dbAdapter.close();
+        loadAuthor();
+        return true;
+    }
+
+    public void Insert(View v) {
+        editText = findViewById(R.id.editText);
+        dbAdapter.open();
+        dbAdapter.save(editText.getText().toString());
+        dbAdapter.close();
+        editText.getText().clear();
+        loadAuthor();
     }
 
     protected void loadAuthor() {

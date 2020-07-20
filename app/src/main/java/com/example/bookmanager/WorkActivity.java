@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -22,6 +23,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     List<WorkTableItem> workList;
     WorkTableItem workItem;
     ListView listView;
+    EditText editText;
     Intent intent;
     int keyAuthorId;
 
@@ -54,6 +56,17 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         intent = new Intent(this,BookActivity.class);
         intent.putExtra("workId",workId);
         startActivity(intent);
+    }
+
+
+
+    public void Insert(View v) {
+        editText = findViewById(R.id.editText);
+        dbAdapter.open();
+        dbAdapter.save(editText.getText().toString(), keyAuthorId);
+        dbAdapter.close();
+        editText.getText().clear();
+        loadWork();
     }
 
     protected void loadWork() {
