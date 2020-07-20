@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,11 +19,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class BookActivity extends AppCompatActivity {
+public class BookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private DatabaseAdapter dbAdapter = null;
     List<BookTableItem> bookList;
     BookTableItem bookItem;
@@ -50,10 +49,28 @@ public class BookActivity extends AppCompatActivity {
         loadBook();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        bookItem = bookList.get(i);
+        int status = bookItem.getStatus();
+
+        if(status == 2) {
+            status = 0;
+        }else {
+            status++;
+        }
+
+        dbAdapter.open();
+        dbAdapter.changeStatus(bookItem.getWorkId(), bookItem.getBookNumber(), status);
+        dbAdapter.close();
+
+        loadBook();
+    }
+
     public void Insert(View v) {
         editText = findViewById(R.id.editText);
         dbAdapter.open();
-        dbAdapter.save(keyWorkId, editText.getText().toString(), 0, 0);
+        dbAdapter.save(keyWorkId, editText.getText().toString(), 0);
         dbAdapter.close();
         editText.getText().clear();
         loadBook();
@@ -65,7 +82,7 @@ public class BookActivity extends AppCompatActivity {
         bookList.clear();
         dbAdapter.open();
 
-        String [] columns = {"work_id","book_number","bought","read"};
+        String [] columns = {"work_id","book_number","status"};
         Cursor cs;
 
         if(keyWorkId == 0) {
@@ -75,7 +92,7 @@ public class BookActivity extends AppCompatActivity {
         }
         if(cs.moveToFirst()) {
             do {
-                bookItem = new BookTableItem(cs.getInt(0),cs.getString(1),cs.getInt(2),cs.getInt(3));
+                bookItem = new BookTableItem(cs.getInt(0),cs.getString(1),cs.getInt(2));
                 bookList.add(bookItem);
             }while (cs.moveToNext());
         }
@@ -90,14 +107,12 @@ public class BookActivity extends AppCompatActivity {
     public class BookTableItem {
         protected int workId;
         protected String bookNumber;
-        protected int bought;
-        protected int read;
+        protected int status;
 
-        public BookTableItem(int workId, String bookNumber, int bought, int read) {
+        public BookTableItem(int workId, String bookNumber, int status) {
             this.workId = workId;
             this.bookNumber = bookNumber;
-            this.bought = bought;
-            this.read = read;
+            this.status = status;
         }
 
         public int getWorkId() {
@@ -108,20 +123,16 @@ public class BookActivity extends AppCompatActivity {
             return bookNumber;
         }
 
-        public int getBought() {
-            return bought;
+        public int getStatus() {
+            return status;
         }
 
-        public int getRead() {
-            return read;
-        }
     }
 
     public class BookBaseAdapter extends BaseAdapter {
         private Context context;
         private List<BookTableItem> bookList;
-        private List<Boolean> boughtList;
-        private List<Boolean> readList;
+        private TextView textViewNumber, textViewStatus;
 
         public BookBaseAdapter(Context context, List<BookTableItem> bookList) {
             this.context = context;
@@ -150,31 +161,53 @@ public class BookActivity extends AppCompatActivity {
             if(v == null) {
                 v = activity.getLayoutInflater().inflate(R.layout.rowbook,null);
             }
-            ((TextView)v.findViewById(R.id.TextView)).setText(bookItem.getBookNumber());
-            CheckBox bought = v.findViewById(R.id.checkBoxBought);
-            CheckBox read = v.findViewById(R.id.checkBoxRead);
-            bought.setChecked(bookItem.getBought() != 0);
-            read.setChecked(bookItem.getRead() != 0);
+            textViewNumber = v.findViewById(R.id.textViewNumber);
+            textViewStatus = v.findViewById(R.id.textViewStatus);
 
-            bought.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    boughtList.set(i,b);
-                }
-            });
+            textViewNumber.setText(bookItem.getBookNumber());
+            switch (bookItem.getStatus()) {
+                case 0:
+                    textViewStatus.setText(R.string.non_purchased);
+                    textViewStatus.setTextColor(Color.RED);
+                    textViewNumber.setTextColor(Color.RED);
+                    break;
+                case 1:
+                    textViewStatus.setText(R.string.unread);
+                    textViewStatus.setTextColor(Color.YELLOW);
+                    textViewNumber.setTextColor(Color.YELLOW);
+                    break;
+                case 2:
+                    textViewStatus.setText(R.string.read);
+                    textViewStatus.setTextColor(Color.BLACK);
+                    textViewNumber.setTextColor(Color.BLACK);
+                    break;
+            }
 
-            read.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    dbAdapter.open();
-                    if(b) {
-                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),1);
-                    }else {
-                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),0);
-                    }
-                    dbAdapter.close();
-                }
-            });
+
+//            CheckBox bought = v.findViewById(R.id.checkBoxBought);
+//            CheckBox read = v.findViewById(R.id.checkBoxRead);
+//            bought.setChecked(bookItem.getBought() != 0);
+//            read.setChecked(bookItem.getRead() != 0);
+
+//            bought.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                    boughtList.set(i,b);
+//                }
+//            });
+//
+//            read.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//                @Override
+//                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                    dbAdapter.open();
+//                    if(b) {
+//                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),1);
+//                    }else {
+//                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),0);
+//                    }
+//                    dbAdapter.close();
+//                }
+//            });
 
             return v;
         }

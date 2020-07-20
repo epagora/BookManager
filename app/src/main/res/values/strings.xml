@@ -10,7 +10,8 @@
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
-    <string name="bought">購入済</string>
+    <string name="non_purchased">未購入</string>
+    <string name="unread">未読</string>
     <string name="read">既読</string>
     <string name="editText">追加項目を入力してください</string>
     <string name="button">追加</string>

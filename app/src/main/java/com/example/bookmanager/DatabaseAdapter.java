@@ -20,8 +20,9 @@ public class DatabaseAdapter {
     public final static String TABLE_B ="book";
     public final static String W_ID_B = "work_id";
     public final static String NUMBER_B = "book_number";
-    public final static String BOUGHT_B = "bought";
-    public final static String READ_B = "read";
+//    public final static String BOUGHT_B = "bought";
+//    public final static String READ_B = "read";
+    public final static String STATUS_B = "status";
 
     protected final Context context;
     protected DatabaseHelper dbhelper;
@@ -78,14 +79,15 @@ public class DatabaseAdapter {
     }
 
     //巻数テーブルに登録
-    public void save(int work_id, String book_number, int bought, int read) {
+    public void save(int work_id, String book_number, int status) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
             values.put(W_ID_B, work_id);
             values.put(NUMBER_B, book_number);
-            values.put(BOUGHT_B, bought);
-            values.put(READ_B, read);
+            values.put(STATUS_B, status);
+//            values.put(BOUGHT_B, bought);
+//            values.put(READ_B, read);
             db.insert(TABLE_B, null, values);
             db.setTransactionSuccessful();
         }catch (Exception e) {
@@ -95,11 +97,11 @@ public class DatabaseAdapter {
         }
     }
 
-    public void changeBought(int work_id, String book_number, int bought) {
+    public void changeStatus(int work_id, String book_number, int status) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
-            values.put(BOUGHT_B, bought);
+            values.put(STATUS_B, status);
             db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
             db.setTransactionSuccessful();
         }catch (Exception e) {
@@ -109,19 +111,33 @@ public class DatabaseAdapter {
         }
     }
 
-    public void changeRead(int work_id, String book_number, int read) {
-        db.beginTransaction();
-        try {
-            ContentValues values = new ContentValues();
-            values.put(READ_B, read);
-            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
-            db.setTransactionSuccessful();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            db.endTransaction();
-        }
-    }
+//    public void changeBought(int work_id, String book_number, int bought) {
+//        db.beginTransaction();
+//        try {
+//            ContentValues values = new ContentValues();
+//            values.put(BOUGHT_B, bought);
+//            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
+//            db.setTransactionSuccessful();
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }finally {
+//            db.endTransaction();
+//        }
+//    }
+//
+//    public void changeRead(int work_id, String book_number, int read) {
+//        db.beginTransaction();
+//        try {
+//            ContentValues values = new ContentValues();
+//            values.put(READ_B, read);
+//            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
+//            db.setTransactionSuccessful();
+//        }catch (Exception e) {
+//            e.printStackTrace();
+//        }finally {
+//            db.endTransaction();
+//        }
+//    }
 
     public Cursor getTable(String dbTable, String[] columns) {
         return db.query(dbTable, columns, null, null, null, null, null);
@@ -195,12 +211,13 @@ public class DatabaseAdapter {
                     + TITLE_W + " TEXT,"
                     + A_ID_W + " INTEGER, "
                     + "FOREIGN KEY(" + A_ID_W + ") REFERENCES " + TABLE_A + "(" + _ID_A + ") ON DELETE CASCADE);");
-            //巻数テーブル（作品コード[主キー、外部キー]、巻数[主キー]、所有、既読
+            //巻数テーブル（作品コード[主キー、外部キー]、巻数[主キー]、状態（未購入、未読、既読）
             db.execSQL("CREATE TABLE " + TABLE_B + "("
                     + W_ID_B + " INTEGER,"
                     + NUMBER_B + " TEXT,"
-                    + BOUGHT_B + " INTEGER,"
-                    + READ_B + " INTEGER, "
+                    + STATUS_B + " INTEGER,"
+//                    + BOUGHT_B + " INTEGER,"
+//                    + READ_B + " INTEGER, "
                     + "PRIMARY KEY(" + W_ID_B + "," + NUMBER_B + "), "
                     + "FOREIGN KEY(" + W_ID_B + ") REFERENCES " + TABLE_W + "(" + _ID_W + ") ON DELETE CASCADE);");
 
