@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -36,10 +35,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter = new DatabaseAdapter(this);
         authorList = new ArrayList<>();
 
-//        dbAdapter.open();
-//        dbAdapter.save(1, "上巻", 1, 1);
-//        dbAdapter.save(1, "下巻", 1, 0);
-//        dbAdapter.close();
+        setTitle(R.string.authorList);
 
         loadAuthor();
 
@@ -51,9 +47,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemClick(AdapterView<?> av, View v, int i, long l) {
         authorItem = authorList.get(i);
         int authorId = authorItem.getAuthorId();
+        String name = authorItem.getName();
 
         intent = new Intent(this,WorkActivity.class);
         intent.putExtra("authorId",authorId);
+        intent.putExtra("name", name);
         startActivity(intent);
     }
 

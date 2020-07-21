@@ -10,8 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,7 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class BookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
     List<BookTableItem> bookList;
     BookTableItem bookItem;
@@ -29,6 +27,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     EditText editText;
     Intent intent;
     int keyWorkId;
+    String keyWorkTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +43,14 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         Bundle data = intent.getExtras();
         if (data != null) {
             keyWorkId = data.getInt("workId");
+            keyWorkTitle = data.getString("title");
         }
+        setTitle(keyWorkTitle);
 
         loadBook();
+
+        listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -67,6 +71,18 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         loadBook();
     }
 
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        bookItem = bookList.get(i);
+        int workId = bookItem.getWorkId();
+        String bookNumber = bookItem.getBookNumber();
+        dbAdapter.open();
+        dbAdapter.selectDelete(workId, bookNumber);
+        dbAdapter.close();
+        loadBook();
+        return true;
+    }
+
     public void Insert(View v) {
         editText = findViewById(R.id.editText);
         dbAdapter.open();
@@ -75,8 +91,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         editText.getText().clear();
         loadBook();
     }
-
-
 
     protected void loadBook() {
         bookList.clear();
@@ -168,13 +182,13 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             switch (bookItem.getStatus()) {
                 case 0:
                     textViewStatus.setText(R.string.non_purchased);
-                    textViewStatus.setTextColor(Color.RED);
-                    textViewNumber.setTextColor(Color.RED);
+                    textViewStatus.setTextColor(Color.GRAY);
+                    textViewNumber.setTextColor(Color.GRAY);
                     break;
                 case 1:
                     textViewStatus.setText(R.string.unread);
-                    textViewStatus.setTextColor(Color.YELLOW);
-                    textViewNumber.setTextColor(Color.YELLOW);
+                    textViewStatus.setTextColor(Color.RED);
+                    textViewNumber.setTextColor(Color.RED);
                     break;
                 case 2:
                     textViewStatus.setText(R.string.read);
@@ -182,33 +196,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                     textViewNumber.setTextColor(Color.BLACK);
                     break;
             }
-
-
-//            CheckBox bought = v.findViewById(R.id.checkBoxBought);
-//            CheckBox read = v.findViewById(R.id.checkBoxRead);
-//            bought.setChecked(bookItem.getBought() != 0);
-//            read.setChecked(bookItem.getRead() != 0);
-
-//            bought.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                    boughtList.set(i,b);
-//                }
-//            });
-//
-//            read.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                @Override
-//                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                    dbAdapter.open();
-//                    if(b) {
-//                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),1);
-//                    }else {
-//                        dbAdapter.changeRead(bookList.get(i).getWorkId(),bookList.get(i).getBookNumber(),0);
-//                    }
-//                    dbAdapter.close();
-//                }
-//            });
-
             return v;
         }
     }

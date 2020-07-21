@@ -180,7 +180,7 @@ public class DatabaseAdapter {
     public void selectDelete(int id, String book_number) {
         db.beginTransaction();
         try {
-            db.delete(TABLE_B, W_ID_B + "=" + id + " and " + NUMBER_B + "=" + book_number, null);
+            db.delete(TABLE_B, W_ID_B + "=" + id + " and " + NUMBER_B + "= ?", new String[]{book_number});
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();
@@ -197,6 +197,7 @@ public class DatabaseAdapter {
         @Override
         public void onOpen(SQLiteDatabase db) {
             super.onOpen(db);
+            db.execSQL("PRAGMA foreign_keys = ON;");
         }
 
         @Override
@@ -216,19 +217,8 @@ public class DatabaseAdapter {
                     + W_ID_B + " INTEGER,"
                     + NUMBER_B + " TEXT,"
                     + STATUS_B + " INTEGER,"
-//                    + BOUGHT_B + " INTEGER,"
-//                    + READ_B + " INTEGER, "
                     + "PRIMARY KEY(" + W_ID_B + "," + NUMBER_B + "), "
                     + "FOREIGN KEY(" + W_ID_B + ") REFERENCES " + TABLE_W + "(" + _ID_W + ") ON DELETE CASCADE);");
-
-//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('神林長平')");
-//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('森博嗣')");
-//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('宮部みゆき')");
-//            db.execSQL("INSERT INTO " + TABLE_A + "(" + NAME_A + ") VALUES('伊坂幸太郎')");
-//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('膚の下','1')");
-//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('帝王の殻','1')");
-//            db.execSQL("INSERT INTO " + TABLE_W + "(" + TITLE_W + "," + A_ID_W + ") VALUES('戦闘妖精雪風','1')");
-
         }
 
         @Override

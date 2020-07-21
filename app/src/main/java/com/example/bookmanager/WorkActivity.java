@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
+public class WorkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
     List<WorkTableItem> workList;
     WorkTableItem workItem;
@@ -26,6 +26,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     EditText editText;
     Intent intent;
     int keyAuthorId;
+    String keyAuthorName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,24 +42,38 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         Bundle data = intent.getExtras();
         if (data != null) {
             keyAuthorId = data.getInt("authorId");
+            keyAuthorName = data.getString("name");
         }
+        setTitle(keyAuthorName);
 
         loadWork();
 
         listView.setOnItemClickListener(this);
+        listView.setOnItemLongClickListener(this);
     }
 
     @Override
     public void onItemClick(AdapterView<?> av, View v, int i, long l) {
         workItem = workList.get(i);
         int workId = workItem.getWorkId();
+        String title = workItem.getTitle();
 
         intent = new Intent(this,BookActivity.class);
         intent.putExtra("workId",workId);
+        intent.putExtra("title", title);
         startActivity(intent);
     }
 
-
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+        workItem = workList.get(i);
+        int workId = workItem.getWorkId();
+        dbAdapter.open();
+        dbAdapter.selectDelete("work", workId);
+        dbAdapter.close();
+        loadWork();
+        return true;
+    }
 
     public void Insert(View v) {
         editText = findViewById(R.id.editText);
