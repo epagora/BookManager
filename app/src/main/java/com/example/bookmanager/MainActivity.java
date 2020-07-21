@@ -93,9 +93,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 authorList.add(authorItem);
             }while (cs.moveToNext());
         }
-//        AuthorBaseAdapter adapter = new AuthorBaseAdapter(this, authorList);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();

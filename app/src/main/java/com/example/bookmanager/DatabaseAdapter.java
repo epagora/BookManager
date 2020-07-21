@@ -21,8 +21,6 @@ public class DatabaseAdapter {
     public final static String _ID_B = "_id";
     public final static String W_ID_B = "work_id";
     public final static String NUMBER_B = "book_number";
-//    public final static String BOUGHT_B = "bought";
-//    public final static String READ_B = "read";
     public final static String STATUS_B = "status";
 
     protected final Context context;
@@ -34,16 +32,19 @@ public class DatabaseAdapter {
         dbhelper = new DatabaseHelper(this.context);
     }
 
+    //読み書きモードで開く
     public DatabaseAdapter open() {
         db = dbhelper.getWritableDatabase();
         return this;
     }
 
+    //読み込みモードで開く
     public DatabaseAdapter read() {
         db = dbhelper.getReadableDatabase();
         return this;
     }
 
+    //閉じる
     public void close() {
         db.close();
     }
@@ -87,8 +88,6 @@ public class DatabaseAdapter {
             values.put(W_ID_B, work_id);
             values.put(NUMBER_B, book_number);
             values.put(STATUS_B, status);
-//            values.put(BOUGHT_B, bought);
-//            values.put(READ_B, read);
             db.insert(TABLE_B, null, values);
             db.setTransactionSuccessful();
         }catch (Exception e) {
@@ -98,6 +97,7 @@ public class DatabaseAdapter {
         }
     }
 
+    //巻数テーブルのstatusを変更
     public void changeStatus(int work_id, String book_number, int status) {
         db.beginTransaction();
         try {
@@ -112,48 +112,21 @@ public class DatabaseAdapter {
         }
     }
 
-//    public void changeBought(int work_id, String book_number, int bought) {
-//        db.beginTransaction();
-//        try {
-//            ContentValues values = new ContentValues();
-//            values.put(BOUGHT_B, bought);
-//            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
-//            db.setTransactionSuccessful();
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }finally {
-//            db.endTransaction();
-//        }
-//    }
-//
-//    public void changeRead(int work_id, String book_number, int read) {
-//        db.beginTransaction();
-//        try {
-//            ContentValues values = new ContentValues();
-//            values.put(READ_B, read);
-//            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
-//            db.setTransactionSuccessful();
-//        }catch (Exception e) {
-//            e.printStackTrace();
-//        }finally {
-//            db.endTransaction();
-//        }
-//    }
-
+    //任意のテーブルの全ての項目を取得
     public Cursor getTable(String dbTable, String[] columns) {
         return db.query(dbTable, columns, null, null, null, null, null);
     }
 
+    //任意のテーブルの任意の項目を取得
     public Cursor search(String dbTable, String[] columns, String column, int id) {
         return db.query(dbTable, columns, column + "=" + id, null, null, null, null);
     }
 
+    //全て削除
     public void allDelete() {
         db.beginTransaction();
         try {
             db.delete(TABLE_A, null, null);
-//            db.delete(TABLE_W, null, null);
-//            db.delete(TABLE_B, null, null);
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();
@@ -162,6 +135,7 @@ public class DatabaseAdapter {
         }
     }
 
+    //任意の項目を削除(authorテーブル、
     public void selectDelete(String dbTable, int id) {
         db.beginTransaction();
         try {
@@ -213,7 +187,7 @@ public class DatabaseAdapter {
                     + TITLE_W + " TEXT,"
                     + A_ID_W + " INTEGER, "
                     + "FOREIGN KEY(" + A_ID_W + ") REFERENCES " + TABLE_A + "(" + _ID_A + ") ON DELETE CASCADE);");
-            //巻数テーブル（作品コード[主キー、外部キー]、巻数[主キー]、状態（未購入、未読、既読）
+            //巻数テーブル（巻数コード[主キー]、作品コード[外部キー]、巻数（限定版やファンブックもあるためTEXT）、状態（未購入=0、未読=1、既読=2）
             db.execSQL("CREATE TABLE " + TABLE_B + "("
                     + _ID_B + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + W_ID_B + " INTEGER,"

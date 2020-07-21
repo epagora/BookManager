@@ -62,7 +62,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         String title = workItem.getTitle();
 
         intent = new Intent(this,BookActivity.class);
-        intent.putExtra("workId",workId);
+        intent.putExtra("workId", workId);
         intent.putExtra("title", title);
         startActivity(intent);
     }
@@ -107,9 +107,6 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 workList.add(workItem);
             }while (cs.moveToNext());
         }
-//        WorkBaseAdapter adapter = new WorkBaseAdapter(this,workList);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();

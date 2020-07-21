@@ -116,9 +116,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 bookList.add(bookItem);
             }while (cs.moveToNext());
         }
-//        adapter = new BookBaseAdapter(this,bookList);
-//        listView.setAdapter(adapter);
-//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();
