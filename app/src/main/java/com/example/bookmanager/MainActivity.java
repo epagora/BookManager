@@ -20,6 +20,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
+    AuthorBaseAdapter adapter;
     List<AuthorTableItem> authorList;
     AuthorTableItem authorItem;
     ListView listView;
@@ -38,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setTitle(R.string.authorList);
 
         loadAuthor();
+        adapter = new AuthorBaseAdapter(this,authorList);
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.selectDelete("author", authorId);
         dbAdapter.close();
         loadAuthor();
+        updateListView();
         return true;
     }
 
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.close();
         editText.getText().clear();
         loadAuthor();
+        updateListView();
     }
 
     protected void loadAuthor() {
@@ -88,12 +93,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 authorList.add(authorItem);
             }while (cs.moveToNext());
         }
-        AuthorBaseAdapter adapter = new AuthorBaseAdapter(this, authorList);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        AuthorBaseAdapter adapter = new AuthorBaseAdapter(this, authorList);
+//        listView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();
+    }
+
+    public void updateListView() {
+        adapter = (AuthorBaseAdapter)listView.getAdapter();
+        adapter.setAuthorList(authorList);
+        adapter.notifyDataSetChanged();
     }
 
     public class AuthorTableItem {
@@ -136,6 +147,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public long getItemId(int i) {
             return authorList.get(i).getAuthorId();
+        }
+
+        public void setAuthorList(List<AuthorTableItem> authorList) {
+            this.authorList = authorList;
         }
 
         @Override

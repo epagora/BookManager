@@ -20,6 +20,7 @@ import java.util.List;
 
 public class WorkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
+    WorkBaseAdapter adapter;
     List<WorkTableItem> workList;
     WorkTableItem workItem;
     ListView listView;
@@ -47,6 +48,8 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         setTitle(keyAuthorName);
 
         loadWork();
+        adapter = new WorkBaseAdapter(this,workList);
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
@@ -72,6 +75,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.selectDelete("work", workId);
         dbAdapter.close();
         loadWork();
+        updateListView();
         return true;
     }
 
@@ -82,6 +86,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.close();
         editText.getText().clear();
         loadWork();
+        updateListView();
     }
 
     protected void loadWork() {
@@ -102,12 +107,18 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 workList.add(workItem);
             }while (cs.moveToNext());
         }
-        WorkBaseAdapter adapter = new WorkBaseAdapter(this,workList);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        WorkBaseAdapter adapter = new WorkBaseAdapter(this,workList);
+//        listView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();
+    }
+
+    public void updateListView() {
+        adapter = (WorkBaseAdapter)listView.getAdapter();
+        adapter.setWorkList(workList);
+        adapter.notifyDataSetChanged();
     }
 
     public class WorkTableItem {
@@ -156,6 +167,10 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public long getItemId(int i) {
             return workList.get(i).getAuthorId();
+        }
+
+        public void setWorkList(List<WorkTableItem> workList) {
+            this.workList = workList;
         }
 
         @Override

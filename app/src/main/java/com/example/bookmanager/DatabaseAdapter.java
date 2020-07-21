@@ -18,6 +18,7 @@ public class DatabaseAdapter {
     public final static String TITLE_W = "work_title";
     public final static String A_ID_W = "author_id";
     public final static String TABLE_B ="book";
+    public final static String _ID_B = "_id";
     public final static String W_ID_B = "work_id";
     public final static String NUMBER_B = "book_number";
 //    public final static String BOUGHT_B = "bought";
@@ -151,8 +152,8 @@ public class DatabaseAdapter {
         db.beginTransaction();
         try {
             db.delete(TABLE_A, null, null);
-            db.delete(TABLE_W, null, null);
-            db.delete(TABLE_B, null, null);
+//            db.delete(TABLE_W, null, null);
+//            db.delete(TABLE_B, null, null);
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();
@@ -214,10 +215,11 @@ public class DatabaseAdapter {
                     + "FOREIGN KEY(" + A_ID_W + ") REFERENCES " + TABLE_A + "(" + _ID_A + ") ON DELETE CASCADE);");
             //巻数テーブル（作品コード[主キー、外部キー]、巻数[主キー]、状態（未購入、未読、既読）
             db.execSQL("CREATE TABLE " + TABLE_B + "("
+                    + _ID_B + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + W_ID_B + " INTEGER,"
                     + NUMBER_B + " TEXT,"
                     + STATUS_B + " INTEGER,"
-                    + "PRIMARY KEY(" + W_ID_B + "," + NUMBER_B + "), "
+//                    + "PRIMARY KEY(" + W_ID_B + "," + NUMBER_B + "), "
                     + "FOREIGN KEY(" + W_ID_B + ") REFERENCES " + TABLE_W + "(" + _ID_W + ") ON DELETE CASCADE);");
         }
 

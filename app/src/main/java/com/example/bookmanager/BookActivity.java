@@ -21,6 +21,7 @@ import java.util.List;
 
 public class BookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
+    BookBaseAdapter adapter;
     List<BookTableItem> bookList;
     BookTableItem bookItem;
     ListView listView;
@@ -48,6 +49,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         setTitle(keyWorkTitle);
 
         loadBook();
+        adapter = new BookBaseAdapter(this,bookList);
+        listView.setAdapter(adapter);
 
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
@@ -69,6 +72,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.close();
 
         loadBook();
+        updateListView();
     }
 
     @Override
@@ -80,6 +84,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.selectDelete(workId, bookNumber);
         dbAdapter.close();
         loadBook();
+        updateListView();
         return true;
     }
 
@@ -90,6 +95,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter.close();
         editText.getText().clear();
         loadBook();
+        updateListView();
     }
 
     protected void loadBook() {
@@ -110,12 +116,18 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 bookList.add(bookItem);
             }while (cs.moveToNext());
         }
-        BookBaseAdapter adapter = new BookBaseAdapter(this,bookList);
-        listView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+//        adapter = new BookBaseAdapter(this,bookList);
+//        listView.setAdapter(adapter);
+//        adapter.notifyDataSetChanged();
 
         cs.close();
         dbAdapter.close();
+    }
+
+    public void updateListView() {
+        adapter = (BookBaseAdapter)listView.getAdapter();
+        adapter.setBookList(bookList);
+        adapter.notifyDataSetChanged();
     }
 
     public class BookTableItem {
@@ -166,6 +178,10 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         public long getItemId(int i) {
             return bookList.get(i).getWorkId();
+        }
+
+        public void setBookList(List<BookTableItem> bookList) {
+            this.bookList = bookList;
         }
 
         @Override
