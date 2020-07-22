@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BookManager</string>
+    <string name="authorList">Author List</string>
+    <string name="non_purchased">Non Purchased</string>
+    <string name="unread">Unread</string>
+    <string name="read">Read</string>
+    <string name="editText">Please enter additional item</string>
+    <string name="button">Add</string>
+</resources>
