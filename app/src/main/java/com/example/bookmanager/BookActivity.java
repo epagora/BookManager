@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+//巻数一覧ページ用クラス
 public class BookActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
     BookBaseAdapter adapter;
@@ -41,6 +42,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         bookList = new ArrayList<>();
         keyWorkId = 0;
 
+        //作品一覧ページ（WorkActivity）から作品コードと作品名、著者名を取得
         intent = getIntent();
         Bundle data = intent.getExtras();
         if (data != null) {
@@ -48,8 +50,10 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             keyWorkTitle = data.getString("title");
             keyAuthorName = data.getString("name");
         }
+
         setTitle(keyAuthorName + " > " + keyWorkTitle);
 
+        //画面遷移時に巻数一覧を表示(アダプターのセットは遷移時のみ、更新時は行わない）
         loadBook();
         adapter = new BookBaseAdapter(this,bookList);
         listView.setAdapter(adapter);
@@ -58,6 +62,9 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setOnItemLongClickListener(this);
     }
 
+    //ListViewの巻数クリック時にstatus（未購入=0、未読=1、既読=2）を変更
+    //0 -> 1 -> 2 -> 0 とループする
+    //変更後にbookList、ListView更新
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         bookItem = bookList.get(i);
@@ -77,36 +84,45 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         updateListView();
     }
 
+    //ListViewの巻数ロングクリック時に削除
+    //削除後にbookList、ListView更新
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         bookItem = bookList.get(i);
         int workId = bookItem.getWorkId();
         String bookNumber = bookItem.getBookNumber();
+
         dbAdapter.open();
         dbAdapter.selectDelete(workId, bookNumber);
         dbAdapter.close();
+
         loadBook();
         updateListView();
         return true;
     }
 
+    //追加ボタンクリック時にEditTextの入力内容を追加
+    //追加後にbookList、ListView更新
     public void Insert(View v) {
         editText = findViewById(R.id.editText);
+
         dbAdapter.open();
         dbAdapter.save(keyWorkId, editText.getText().toString(), 0);
         dbAdapter.close();
+
         editText.getText().clear();
+
         loadBook();
         updateListView();
     }
 
+    //bookList(BookTableItemのList)にデータベースから情報を取得
     protected void loadBook() {
-        bookList.clear();
         dbAdapter.open();
-
+        bookList.clear();
         String [] columns = {"work_id","book_number","status"};
-        Cursor cs;
 
+        Cursor cs;
         if(keyWorkId == 0) {
             cs = dbAdapter.getTable("book", columns);
         }else {
@@ -118,17 +134,20 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 bookList.add(bookItem);
             }while (cs.moveToNext());
         }
-
         cs.close();
+
         dbAdapter.close();
     }
 
+    //ListViewの更新
+    //アダプターを取得し、そのアダプターにbookListをセットし直す
     public void updateListView() {
         adapter = (BookBaseAdapter)listView.getAdapter();
         adapter.setBookList(bookList);
         adapter.notifyDataSetChanged();
     }
 
+    //巻数テーブルの各要素（作品コード、巻数名、状態[未購入、未読、既読]）をフィールドに持つクラス
     public class BookTableItem {
         protected int workId;
         protected String bookNumber;
@@ -154,6 +173,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
+    //bookListとListViewを繋ぐためのアダプタークラス（ListViewの各列をつくる）
+    //bookListからBookTableItemを抜き出し、ListViewの各列に表示
     public class BookBaseAdapter extends BaseAdapter {
         private Context context;
         private List<BookTableItem> bookList;
@@ -179,6 +200,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             return bookList.get(i).getWorkId();
         }
 
+        //bookListをセットし直す
         public void setBookList(List<BookTableItem> bookList) {
             this.bookList = bookList;
         }
@@ -195,17 +217,17 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
             textViewNumber.setText(bookItem.getBookNumber());
             switch (bookItem.getStatus()) {
-                case 0:
+                case 0: //statusが0なら文字を灰色にして「未購入」表示
                     textViewStatus.setText(R.string.non_purchased);
                     textViewStatus.setTextColor(Color.GRAY);
                     textViewNumber.setTextColor(Color.GRAY);
                     break;
-                case 1:
+                case 1: //statusが1なら文字を赤色にして「未読」表示
                     textViewStatus.setText(R.string.unread);
                     textViewStatus.setTextColor(Color.RED);
                     textViewNumber.setTextColor(Color.RED);
                     break;
-                case 2:
+                case 2: //statusが2なら文字を黒色にして「既読」表示
                     textViewStatus.setText(R.string.read);
                     textViewStatus.setTextColor(Color.BLACK);
                     textViewNumber.setTextColor(Color.BLACK);

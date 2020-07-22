@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+//作品一覧ページ用クラス
 public class WorkActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
     private DatabaseAdapter dbAdapter = null;
     WorkBaseAdapter adapter;
@@ -39,14 +40,17 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         workList = new ArrayList<>();
         keyAuthorId = 0;
 
+        //著者一覧ページ（MainActivity）から著者コードと著者名を取得
         intent = getIntent();
         Bundle data = intent.getExtras();
         if (data != null) {
             keyAuthorId = data.getInt("authorId");
             keyAuthorName = data.getString("name");
         }
+
         setTitle(keyAuthorName);
 
+        //画面遷移時に作品一覧を表示(アダプターのセットは遷移時のみ、更新時は行わない）
         loadWork();
         adapter = new WorkBaseAdapter(this,workList);
         listView.setAdapter(adapter);
@@ -55,6 +59,8 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setOnItemLongClickListener(this);
     }
 
+    //ListViewの作品名クリック時に巻数一覧ページに移動
+    //作品コードと作品名、著者名を渡す
     @Override
     public void onItemClick(AdapterView<?> av, View v, int i, long l) {
         workItem = workList.get(i);
@@ -65,38 +71,48 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra("workId", workId);
         intent.putExtra("title", title);
         intent.putExtra("name", keyAuthorName);
+
         startActivity(intent);
     }
 
+    //ListViewの作品名ロングクリック時に削除
+    //削除後にworkList、ListView更新
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         workItem = workList.get(i);
         int workId = workItem.getWorkId();
+
         dbAdapter.open();
         dbAdapter.selectDelete("work", workId);
         dbAdapter.close();
+
         loadWork();
         updateListView();
         return true;
     }
 
+    //追加ボタンクリック時にEditTextの入力内容を追加
+    //追加後にworkList、ListView更新
     public void Insert(View v) {
         editText = findViewById(R.id.editText);
+
         dbAdapter.open();
         dbAdapter.save(editText.getText().toString(), keyAuthorId);
         dbAdapter.close();
+
         editText.getText().clear();
+
         loadWork();
         updateListView();
     }
 
+    //workList(WorkTableItemのList）にデータベースから情報を取得
     protected void loadWork() {
-        workList.clear();
         dbAdapter.open();
-
+        workList.clear();
         String [] columns = {"_id","work_title","author_id"};
-        Cursor cs;
 
+        Cursor cs;
         if(keyAuthorId == 0) {
             cs = dbAdapter.getTable("work", columns);
         }else {
@@ -108,17 +124,20 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 workList.add(workItem);
             }while (cs.moveToNext());
         }
-
         cs.close();
+
         dbAdapter.close();
     }
 
+    //ListViewの更新
+    //アダプターを取得し、そのアダプターにworkListをセットし直す
     public void updateListView() {
         adapter = (WorkBaseAdapter)listView.getAdapter();
         adapter.setWorkList(workList);
         adapter.notifyDataSetChanged();
     }
 
+    //作品テーブルの各要素（作品コード、作品名、著者コード）をフィールドに持つクラス
     public class WorkTableItem {
         protected int workId;
         protected String title;
@@ -143,6 +162,8 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
+    //workListとListViewを繋ぐためのアダプタークラス（ListViewの各列をつくる）
+    //workListからWorkTableItemを抜き出し、ListViewの各列に表示
     public class WorkBaseAdapter extends BaseAdapter {
         private Context context;
         private List<WorkTableItem> workList;
@@ -167,6 +188,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
             return workList.get(i).getAuthorId();
         }
 
+        //workListをセットし直す
         public void setWorkList(List<WorkTableItem> workList) {
             this.workList = workList;
         }

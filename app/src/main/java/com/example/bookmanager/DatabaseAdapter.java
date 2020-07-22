@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+//データベース操作用アダプタークラス
+//SQLiteOpenHelperを継承したDatabaseHelperクラスを内部クラスに持つ
 public class DatabaseAdapter {
     private static final String DBNAME = "bookManager";
     private static final int VERSION = 1;
@@ -49,6 +51,7 @@ public class DatabaseAdapter {
         db.close();
     }
 
+    //saveメソッドは引数の違いでテーブルを見分ける
     //著者テーブルに登録
     public void save(String author_name) {
         db.beginTransaction();
@@ -97,7 +100,7 @@ public class DatabaseAdapter {
         }
     }
 
-    //巻数テーブルのstatusを変更
+    //巻数テーブルのstatus（未購入=0、未読=1、既読=2）を変更
     public void changeStatus(int work_id, String book_number, int status) {
         db.beginTransaction();
         try {
@@ -123,6 +126,7 @@ public class DatabaseAdapter {
     }
 
     //全て削除
+    //ON DELETE CASCADEを設定済みのため、authorテーブルを削除すれば全て削除出来る
     public void allDelete() {
         db.beginTransaction();
         try {
@@ -135,7 +139,8 @@ public class DatabaseAdapter {
         }
     }
 
-    //任意の項目を削除(authorテーブル、
+    //任意の項目を削除(authorテーブル、workテーブル用）
+    //テーブルは引数で指定
     public void selectDelete(String dbTable, int id) {
         db.beginTransaction();
         try {
@@ -152,6 +157,8 @@ public class DatabaseAdapter {
         }
     }
 
+    //任意の項目を削除（bookテーブル用）
+    //テーブルの指定は必要なし
     public void selectDelete(int id, String book_number) {
         db.beginTransaction();
         try {
@@ -164,6 +171,7 @@ public class DatabaseAdapter {
         }
     }
 
+    //SQLiteOpenHelperを継承したクラス、データベースを管理する
     private static class DatabaseHelper extends SQLiteOpenHelper {
         public DatabaseHelper(Context context) {
             super(context, DBNAME, null, VERSION);
@@ -188,6 +196,7 @@ public class DatabaseAdapter {
                     + A_ID_W + " INTEGER, "
                     + "FOREIGN KEY(" + A_ID_W + ") REFERENCES " + TABLE_A + "(" + _ID_A + ") ON DELETE CASCADE);");
             //巻数テーブル（巻数コード[主キー]、作品コード[外部キー]、巻数（限定版やファンブックもあるためTEXT）、状態（未購入=0、未読=1、既読=2）
+            //巻数コードはデータベース内部でしか使用していない
             db.execSQL("CREATE TABLE " + TABLE_B + "("
                     + _ID_B + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                     + W_ID_B + " INTEGER,"
