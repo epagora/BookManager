@@ -29,6 +29,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     Intent intent;
     int keyWorkId;
     String keyWorkTitle;
+    String keyAuthorName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +46,9 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         if (data != null) {
             keyWorkId = data.getInt("workId");
             keyWorkTitle = data.getString("title");
+            keyAuthorName = data.getString("name");
         }
-        setTitle(keyWorkTitle);
+        setTitle(keyAuthorName + " > " + keyWorkTitle);
 
         loadBook();
         adapter = new BookBaseAdapter(this,bookList);

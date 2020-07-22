@@ -64,6 +64,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         intent = new Intent(this,BookActivity.class);
         intent.putExtra("workId", workId);
         intent.putExtra("title", title);
+        intent.putExtra("name", keyAuthorName);
         startActivity(intent);
     }
 
