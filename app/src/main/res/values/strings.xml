@@ -1,10 +1,12 @@
 <resources>
     <string name="app_name">BookManager</string>
 
-    <string name="authorList">著者リスト</string>
+    <string name="author_list">著者一覧</string>
+    <string name="work_list">作品一覧</string>
     <string name="non_purchased">未購入</string>
     <string name="unread">未読</string>
     <string name="read">既読</string>
-    <string name="editText">追加項目を入力してください</string>
+    <string name="edit_text">追加項目を入力してください</string>
     <string name="button">追加</string>
+    <string name="all_delete">全削除</string>
 </resources>

@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         dbAdapter = new DatabaseAdapter(this);
         authorList = new ArrayList<>();
 
-        setTitle(R.string.authorList);
+        setTitle(R.string.author_list);
 
         //起動、画面遷移時に著者一覧を表示(アダプターのセットは起動、画面遷移時のみ、更新時は行わない）
         loadAuthor();

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">BookManager</string>
-    <string name="authorList">Author List</string>
+    <string name="author_list">List of Authors</string>
     <string name="non_purchased">Non Purchased</string>
     <string name="unread">Unread</string>
     <string name="read">Read</string>
-    <string name="editText">Please enter additional item</string>
+    <string name="edit_text">Please enter additional item</string>
     <string name="button">Add</string>
+    <string name="work_list">List of Works</string>
+    <string name="all_delete">Delete all</string>
 </resources>
