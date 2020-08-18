@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -13,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -60,6 +63,35 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
         listView.setOnItemClickListener(this);
         listView.setOnItemLongClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.option_author:
+                intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.option_work:
+                intent = new Intent(this,WorkActivity.class);
+                intent.putExtra("authorId", 0);
+                startActivity(intent);
+                break;
+            case R.id.option_delete:
+                dbAdapter.open();
+                dbAdapter.allDelete();
+                dbAdapter.close();
+                intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
     }
 
     //ListViewの巻数クリック時にstatus（未購入=0、未読=1、既読=2）を変更

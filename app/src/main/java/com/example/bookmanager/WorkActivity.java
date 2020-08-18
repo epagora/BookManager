@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -41,14 +44,18 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         keyAuthorId = 0;
 
         //著者一覧ページ（MainActivity）から著者コードと著者名を取得
+        //オプションメニューの作品一覧から来た場合は著者コードは0扱い、タイトルは作品一覧になる
         intent = getIntent();
         Bundle data = intent.getExtras();
         if (data != null) {
             keyAuthorId = data.getInt("authorId");
-            keyAuthorName = data.getString("name");
+            if (keyAuthorId == 0) {
+                setTitle(R.string.work_list);
+            }else {
+                keyAuthorName = data.getString("name");
+                setTitle(keyAuthorName);
+            }
         }
-
-        setTitle(keyAuthorName);
 
         //画面遷移時に作品一覧を表示(アダプターのセットは遷移時のみ、更新時は行わない）
         loadWork();
@@ -59,6 +66,35 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setOnItemLongClickListener(this);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.option_author:
+                intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.option_work:
+                intent = new Intent(this,WorkActivity.class);
+                intent.putExtra("authorId", 0);
+                startActivity(intent);
+                break;
+            case R.id.option_delete:
+                dbAdapter.open();
+                dbAdapter.allDelete();
+                dbAdapter.close();
+                intent = new Intent(this,MainActivity.class);
+                startActivity(intent);
+                break;
+        }
+        return true;
+    }
+
     //ListViewの作品名クリック時に巻数一覧ページに移動
     //作品コードと作品名、著者名を渡す
     @Override
@@ -66,6 +102,9 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         workItem = workList.get(i);
         int workId = workItem.getWorkId();
         String title = workItem.getTitle();
+        dbAdapter.open();
+        keyAuthorName = dbAdapter.getAuthorName(workItem.getAuthorId());
+        dbAdapter.close();
 
         intent = new Intent(this,BookActivity.class);
         intent.putExtra("workId", workId);

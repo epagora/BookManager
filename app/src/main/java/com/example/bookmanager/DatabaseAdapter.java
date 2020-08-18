@@ -125,6 +125,16 @@ public class DatabaseAdapter {
         return db.query(dbTable, columns, column + "=" + id, null, null, null, null);
     }
 
+    //著者コードから著者テーブルの著者名を取得
+    public String getAuthorName(int id) {
+        String[] columns = {"_id","author_name"};
+        Cursor cs = db.query("author", columns, "_id=" + id, null, null, null, null);
+        cs.moveToFirst();
+        String authorName = cs.getString(1);
+        cs.close();
+        return authorName;
+    }
+
     //全て削除
     //ON DELETE CASCADEを設定済みのため、authorテーブルを削除すれば全て削除出来る
     public void allDelete() {
