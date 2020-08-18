@@ -36,9 +36,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        listView = findViewById(R.id.itemListView);
+        
         dbAdapter = new DatabaseAdapter(this);
         workList = new ArrayList<>();
         keyAuthorId = 0;
@@ -50,12 +48,15 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         if (data != null) {
             keyAuthorId = data.getInt("authorId");
             if (keyAuthorId == 0) {
+                setContentView(R.layout.activity_work_all);
                 setTitle(R.string.work_list);
             }else {
+                setContentView(R.layout.activity_main);
                 keyAuthorName = data.getString("name");
                 setTitle(keyAuthorName);
             }
         }
+        listView = findViewById(R.id.itemListView);
 
         //画面遷移時に作品一覧を表示(アダプターのセットは遷移時のみ、更新時は行わない）
         loadWork();
