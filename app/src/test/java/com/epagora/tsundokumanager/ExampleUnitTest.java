@@ -1,4 +1,4 @@
-package com.example.bookmanager;
+package com.epagora.tsundokumanager;
 
 import org.junit.Test;
 

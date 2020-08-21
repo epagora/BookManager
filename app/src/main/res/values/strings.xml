@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BookManager</string>
+    <string name="app_name">積読管理</string>
 
     <string name="author_list">著者一覧</string>
     <string name="work_list">作品一覧</string>

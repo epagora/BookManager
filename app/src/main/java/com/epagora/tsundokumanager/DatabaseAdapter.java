@@ -1,4 +1,4 @@
-package com.example.bookmanager;
+package com.epagora.tsundokumanager;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 //データベース操作用アダプタークラス
 //SQLiteOpenHelperを継承したDatabaseHelperクラスを内部クラスに持つ
 public class DatabaseAdapter {
-    private static final String DBNAME = "bookManager";
+    private static final String DBNAME = "tsundokuManager";
     private static final int VERSION = 1;
 
     public final static String TABLE_A = "author";

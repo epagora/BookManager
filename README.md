@@ -1,4 +1,4 @@
-# BookManager
+# TsundokuManager
 
 Android Studioでつくったアプリです。
 主に漫画の管理を目的としています。
