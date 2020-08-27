@@ -9,4 +9,6 @@
     <string name="button">Add</string>
     <string name="work_list">List of Works</string>
     <string name="all_delete">Delete all</string>
+    <string name="delete">Delete</string>
+    <string name="rename">Rename</string>
 </resources>

@@ -8,5 +8,7 @@
     <string name="read">既読</string>
     <string name="edit_text">追加項目を入力してください</string>
     <string name="button">追加</string>
+    <string name="delete">削除</string>
     <string name="all_delete">全削除</string>
+    <string name="rename">項目名を変更</string>
 </resources>
