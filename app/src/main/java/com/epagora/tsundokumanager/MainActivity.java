@@ -1,6 +1,7 @@
 package com.epagora.tsundokumanager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import android.app.Activity;
 import android.content.Context;
@@ -102,9 +103,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         authorItem = authorList.get(i);
         int authorId = authorItem.getAuthorId();
 
-        dbAdapter.open();
-        dbAdapter.selectDelete("author", authorId);
-        dbAdapter.close();
+        DialogFragment dialog = new MainDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("id", authorId);
+        args.putString("activity", "main");
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "dialog_main");
+
+//        dbAdapter.open();
+//        dbAdapter.selectDelete("author", authorId);
+//        dbAdapter.close();
 
         loadAuthor();
         updateListView();

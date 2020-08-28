@@ -18,7 +18,7 @@ public class MainDialogFragment extends DialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (i) {
                             case R.string.rename:
-                                
+
                                 break;
                             case R.string.delete:
                                 break;
