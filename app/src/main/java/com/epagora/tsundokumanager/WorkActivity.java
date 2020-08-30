@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,9 +122,16 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         workItem = workList.get(i);
         int workId = workItem.getWorkId();
 
-        dbAdapter.open();
-        dbAdapter.selectDelete("work", workId);
-        dbAdapter.close();
+        DialogFragment dialog = new MainDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("id", workId);
+        args.putString("activity", "work");
+        dialog.setArguments(args);
+        dialog.show(getSupportFragmentManager(), "dialog_main");
+
+//        dbAdapter.open();
+//        dbAdapter.selectDelete("work", workId);
+//        dbAdapter.close();
 
         loadWork();
         updateListView();
