@@ -15,7 +15,7 @@ public class MainDialogFragment extends DialogFragment {
         final Bundle args = Objects.requireNonNull(getArguments());
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
-        return builder.setTitle(args.getString("name"))
+        return builder.setTitle(args.getString("itemName"))
                 .setItems(R.array.main_dialog_list, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

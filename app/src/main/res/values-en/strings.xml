@@ -11,4 +11,7 @@
     <string name="all_delete">Delete all</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
+    <string name="really_delete">Do you really want to delete this?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

@@ -121,11 +121,13 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         workItem = workList.get(i);
         int workId = workItem.getWorkId();
+        String itemName = workItem.getTitle();
 
         DialogFragment dialog = new MainDialogFragment();
         Bundle args = new Bundle();
         args.putInt("id", workId);
-        args.putString("activity", "work");
+        args.putString("itemName", itemName);
+        args.putString("table", "work");
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "dialog_main");
 

@@ -102,13 +102,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         authorItem = authorList.get(i);
         int authorId = authorItem.getAuthorId();
-        String name = authorItem.getName();
+        String itemName = authorItem.getName();
 
         DialogFragment dialog = new MainDialogFragment();
         Bundle args = new Bundle();
         args.putInt("id", authorId);
-        args.putString("name", name);
-        args.putString("activity", "main");
+        args.putString("itemName", itemName);
+        args.putString("table", "author");
         dialog.setArguments(args);
         dialog.show(getSupportFragmentManager(), "dialog_main");
 
