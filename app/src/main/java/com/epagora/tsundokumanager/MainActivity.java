@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.option_author:
-                Toast toast = Toast.makeText(this, "現在表示されています", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this, R.string.currently_displayed, Toast.LENGTH_SHORT);
                 toast.show();
                 break;
             case R.id.option_work:
@@ -74,11 +74,24 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(intent);
                 break;
             case R.id.option_delete:
-                dbAdapter.open();
-                dbAdapter.allDelete();
-                dbAdapter.close();
-                loadAuthor();
-                updateListView();
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.all_delete)
+                        .setMessage(R.string.really_all_delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.allDelete();
+                                dbAdapter.close();
+                                loadAuthor();
+                                updateListView();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
                 break;
         }
         return true;

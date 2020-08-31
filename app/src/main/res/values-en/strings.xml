@@ -16,4 +16,8 @@
     <string name="no">No</string>
     <string name="edit_new_text">Please enter new item name</string>
     <string name="cancel">Cancel</string>
+    <string name="return_status">Return to [Non Purchased]</string>
+    <string name="currently_displayed">Currently displayed</string>
+    <string name="already">Already [Read]</string>
+    <string name="really_all_delete">Do you really want to delete all?</string>
 </resources>

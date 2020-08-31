@@ -86,7 +86,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.option_work:
                 if(keyAuthorId == 0) {
-                    Toast toast = Toast.makeText(this, "現在表示されています", Toast.LENGTH_SHORT);
+                    Toast toast = Toast.makeText(this, R.string.currently_displayed, Toast.LENGTH_SHORT);
                     toast.show();
                 }else {
                     intent = new Intent(this,WorkActivity.class);
@@ -95,11 +95,24 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 break;
             case R.id.option_delete:
-                dbAdapter.open();
-                dbAdapter.allDelete();
-                dbAdapter.close();
-                intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.all_delete)
+                        .setMessage(R.string.really_all_delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.allDelete();
+                                dbAdapter.close();
+                                intent = new Intent(WorkActivity.this,MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
                 break;
         }
         return true;

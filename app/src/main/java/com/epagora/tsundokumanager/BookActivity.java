@@ -1,11 +1,14 @@
 package com.epagora.tsundokumanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,8 +18,10 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,18 +88,31 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(intent);
                 break;
             case R.id.option_delete:
-                dbAdapter.open();
-                dbAdapter.allDelete();
-                dbAdapter.close();
-                intent = new Intent(this,MainActivity.class);
-                startActivity(intent);
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.all_delete)
+                        .setMessage(R.string.really_all_delete)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.allDelete();
+                                dbAdapter.close();
+                                intent = new Intent(BookActivity.this,MainActivity.class);
+                                startActivity(intent);
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
                 break;
         }
         return true;
     }
 
     //ListViewの巻数クリック時にstatus（未購入=0、未読=1、既読=2）を変更
-    //0 -> 1 -> 2 -> 0 とループする
+    //0 -> 1 -> 2 でそれ以上は変更しない
     //変更後にbookList、ListView更新
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -102,7 +120,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         int status = bookItem.getStatus();
 
         if(status == 2) {
-            status = 0;
+            Toast toast = Toast.makeText(this, R.string.already, Toast.LENGTH_SHORT);
+            toast.show();
         }else {
             status++;
         }
@@ -115,19 +134,84 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         updateListView();
     }
 
-    //ListViewの巻数ロングクリック時に削除
-    //削除後にbookList、ListView更新
+    //ListViewの巻数ロングクリック時にダイアログ表示（ステータスを戻す、項目名の変更、削除、キャンセル）
+    //変更、削除後にbookList、ListView更新
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         bookItem = bookList.get(i);
-        int bookId = bookItem.getBookId();
+        final int bookId = bookItem.getBookId();
+        final String bookNumber = bookItem.getBookNumber();
 
-        dbAdapter.open();
-        dbAdapter.selectDelete("book", bookId);
-        dbAdapter.close();
+        final ConstraintLayout layout = (ConstraintLayout) LayoutInflater.from(this).inflate(R.layout.dialog_body, null);
+        final EditText editNewText = layout.findViewById(R.id.editNewText);
 
-        loadBook();
-        updateListView();
+        new AlertDialog.Builder(this)
+                .setItems(R.array.book_dialog_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (getResources().obtainTypedArray(R.array.book_dialog_list).getResourceId(i, -1)) {
+                            case R.string.return_status:
+                                dbAdapter.open();
+                                dbAdapter.changeStatus(bookId, 0);
+                                dbAdapter.close();
+                                loadBook();
+                                updateListView();
+                                break;
+                            case R.string.rename:
+                                new AlertDialog.Builder(BookActivity.this)
+                                        .setTitle(bookNumber)
+                                        .setView(layout)
+                                        .setPositiveButton(R.string.rename, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.changeItemName("book", bookId, editNewText.getText().toString());
+                                                dbAdapter.close();
+                                                loadBook();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            case R.string.delete:
+                                new AlertDialog.Builder(BookActivity.this)
+                                        .setTitle(bookNumber)
+                                        .setMessage(R.string.really_delete)
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.selectDelete("book", bookId);
+                                                dbAdapter.close();
+                                                loadBook();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            default:
+                        }
+                    }
+                })
+                .show();
+
+//        bookItem = bookList.get(i);
+//        int bookId = bookItem.getBookId();
+//
+//        dbAdapter.open();
+//        dbAdapter.selectDelete("book", bookId);
+//        dbAdapter.close();
+//
+//        loadBook();
+//        updateListView();
         return true;
     }
 
