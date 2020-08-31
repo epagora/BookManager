@@ -108,7 +108,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         dbAdapter.open();
-        dbAdapter.changeStatus(bookItem.getWorkId(), bookItem.getBookNumber(), status);
+        dbAdapter.changeStatus(bookItem.getBookId(), status);
         dbAdapter.close();
 
         loadBook();
@@ -120,11 +120,10 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         bookItem = bookList.get(i);
-        int workId = bookItem.getWorkId();
-        String bookNumber = bookItem.getBookNumber();
+        int bookId = bookItem.getBookId();
 
         dbAdapter.open();
-        dbAdapter.selectDelete(workId, bookNumber);
+        dbAdapter.selectDelete("book", bookId);
         dbAdapter.close();
 
         loadBook();
@@ -151,7 +150,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void loadBook() {
         dbAdapter.open();
         bookList.clear();
-        String [] columns = {"work_id","book_number","status"};
+        String [] columns = {"_id","work_id","book_number","status"};
 
         Cursor cs;
         if(keyWorkId == 0) {
@@ -161,7 +160,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         if(cs.moveToFirst()) {
             do {
-                bookItem = new BookTableItem(cs.getInt(0),cs.getString(1),cs.getInt(2));
+                bookItem = new BookTableItem(cs.getInt(0),cs.getInt(1),cs.getString(2),cs.getInt(3));
                 bookList.add(bookItem);
             }while (cs.moveToNext());
         }
@@ -180,14 +179,20 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
 
     //巻数テーブルの各要素（作品コード、巻数名、状態[未購入、未読、既読]）をフィールドに持つクラス
     public class BookTableItem {
+        protected int bookId;
         protected int workId;
         protected String bookNumber;
         protected int status;
 
-        public BookTableItem(int workId, String bookNumber, int status) {
+        public BookTableItem(int bookId, int workId, String bookNumber, int status) {
+            this.bookId = bookId;
             this.workId = workId;
             this.bookNumber = bookNumber;
             this.status = status;
+        }
+
+        public int getBookId() {
+            return bookId;
         }
 
         public int getWorkId() {

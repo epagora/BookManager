@@ -1,13 +1,16 @@
 package com.epagora.tsundokumanager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -96,28 +99,68 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(intent);
     }
 
-    //ListViewの著者名ロングクリック時に削除
-    //削除後にauthorList、ListView更新
+    //ListViewの著者名ロングクリック時にダイアログ表示（項目名の変更、削除、キャンセル）
+    //変更、削除後にauthorList、ListView更新
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         authorItem = authorList.get(i);
-        int authorId = authorItem.getAuthorId();
-        String itemName = authorItem.getName();
+        final int authorId = authorItem.getAuthorId();
+        final String name = authorItem.getName();
 
-        DialogFragment dialog = new MainDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("id", authorId);
-        args.putString("itemName", itemName);
-        args.putString("table", "author");
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "dialog_main");
+        final ConstraintLayout layout = (ConstraintLayout) LayoutInflater.from(this).inflate(R.layout.dialog_body, null);
+        final EditText editNewText = layout.findViewById(R.id.editNewText);
 
-//        dbAdapter.open();
-//        dbAdapter.selectDelete("author", authorId);
-//        dbAdapter.close();
+        new AlertDialog.Builder(this)
+                .setItems(R.array.main_dialog_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (getResources().obtainTypedArray(R.array.main_dialog_list).getResourceId(i, -1)) {
+                            case R.string.rename:
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle(name)
+                                        .setView(layout)
+                                        .setPositiveButton(R.string.rename, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.changeItemName("author", authorId, editNewText.getText().toString());
+                                                dbAdapter.close();
+                                                loadAuthor();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            case R.string.delete:
+                                new AlertDialog.Builder(MainActivity.this)
+                                        .setTitle(name)
+                                        .setMessage(R.string.really_delete)
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.selectDelete("author", authorId);
+                                                dbAdapter.close();
+                                                loadAuthor();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            default:
+                        }
+                    }
+                })
+                .show();
 
-        loadAuthor();
-        updateListView();
         return true;
     }
 

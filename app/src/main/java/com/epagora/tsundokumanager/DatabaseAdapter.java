@@ -100,13 +100,40 @@ public class DatabaseAdapter {
         }
     }
 
+    public void changeItemName(String dbTable, int id, String new_name) {
+        String column = null;
+        switch (dbTable) {
+            case TABLE_A:
+                column = NAME_A;
+                break;
+            case TABLE_W:
+                column = TITLE_W;
+                break;
+            case TABLE_B:
+                column = NUMBER_B;
+                break;
+        }
+
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(column, new_name);
+            db.update(dbTable, values, "_id =" + id, null);
+            db.setTransactionSuccessful();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+        }
+    }
+
     //巻数テーブルのstatus（未購入=0、未読=1、既読=2）を変更
-    public void changeStatus(int work_id, String book_number, int status) {
+    public void changeStatus(int id, int status) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
             values.put(STATUS_B, status);
-            db.update(TABLE_B, values, W_ID_B + "=" + work_id + " and " + NUMBER_B + "= ?", new String[]{book_number});
+            db.update(TABLE_B, values, _ID_B + "=" + id, null);
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();
@@ -149,30 +176,22 @@ public class DatabaseAdapter {
         }
     }
 
-    //任意の項目を削除(authorテーブル、workテーブル用）
+    //任意の項目を削除
     //テーブルは引数で指定
     public void selectDelete(String dbTable, int id) {
         db.beginTransaction();
         try {
-            if (dbTable.equals(TABLE_A)) {
-                db.delete(TABLE_A, _ID_A + "=" + id, null);
-            }else if(dbTable.equals(TABLE_W)) {
-                db.delete(TABLE_W, _ID_W + "=" + id, null);
+            switch (dbTable) {
+                case TABLE_A:
+                    db.delete(TABLE_A, _ID_A + "=" + id, null);
+                    break;
+                case TABLE_W:
+                    db.delete(TABLE_W, _ID_W + "=" + id, null);
+                    break;
+                case TABLE_B:
+                    db.delete(TABLE_B, _ID_B + "=" + id, null);
+                    break;
             }
-            db.setTransactionSuccessful();
-        }catch (Exception e) {
-            e.printStackTrace();
-        }finally {
-            db.endTransaction();
-        }
-    }
-
-    //任意の項目を削除（bookテーブル用）
-    //テーブルの指定は必要なし
-    public void selectDelete(int id, String book_number) {
-        db.beginTransaction();
-        try {
-            db.delete(TABLE_B, W_ID_B + "=" + id + " and " + NUMBER_B + "= ?", new String[]{book_number});
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();

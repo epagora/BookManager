@@ -12,6 +12,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/edit_text"
+        android:importantForAutofill="no"
+        android:inputType="text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,7 +27,8 @@
         android:onClick="Insert"
         android:text="@string/button"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <ListView
         android:id="@+id/itemListView"

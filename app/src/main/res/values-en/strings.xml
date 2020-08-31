@@ -14,4 +14,6 @@
     <string name="really_delete">Do you really want to delete this?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="edit_new_text">Please enter new item name</string>
+    <string name="cancel">Cancel</string>
 </resources>

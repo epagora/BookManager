@@ -1,10 +1,13 @@
 package com.epagora.tsundokumanager;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,9 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,9 +85,14 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 startActivity(intent);
                 break;
             case R.id.option_work:
-                intent = new Intent(this,WorkActivity.class);
-                intent.putExtra("authorId", 0);
-                startActivity(intent);
+                if(keyAuthorId == 0) {
+                    Toast toast = Toast.makeText(this, "現在表示されています", Toast.LENGTH_SHORT);
+                    toast.show();
+                }else {
+                    intent = new Intent(this,WorkActivity.class);
+                    intent.putExtra("authorId", 0);
+                    startActivity(intent);
+                }
                 break;
             case R.id.option_delete:
                 dbAdapter.open();
@@ -115,28 +124,68 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         startActivity(intent);
     }
 
-    //ListViewの作品名ロングクリック時に削除
-    //削除後にworkList、ListView更新
+    //ListViewの作品名ロングクリック時にダイアログ表示（項目名の変更、削除、キャンセル）
+    //変更、削除後にworkList、ListView更新
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
         workItem = workList.get(i);
-        int workId = workItem.getWorkId();
-        String itemName = workItem.getTitle();
+        final int workId = workItem.getWorkId();
+        final String title = workItem.getTitle();
 
-        DialogFragment dialog = new MainDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("id", workId);
-        args.putString("itemName", itemName);
-        args.putString("table", "work");
-        dialog.setArguments(args);
-        dialog.show(getSupportFragmentManager(), "dialog_main");
+        final ConstraintLayout layout = (ConstraintLayout) LayoutInflater.from(this).inflate(R.layout.dialog_body, null);
+        final EditText editNewText = layout.findViewById(R.id.editNewText);
 
-//        dbAdapter.open();
-//        dbAdapter.selectDelete("work", workId);
-//        dbAdapter.close();
+        new AlertDialog.Builder(this)
+                .setItems(R.array.main_dialog_list, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        switch (getResources().obtainTypedArray(R.array.main_dialog_list).getResourceId(i, -1)) {
+                            case R.string.rename:
+                                new AlertDialog.Builder(WorkActivity.this)
+                                        .setTitle(title)
+                                        .setView(layout)
+                                        .setPositiveButton(R.string.rename, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.changeItemName("work", workId, editNewText.getText().toString());
+                                                dbAdapter.close();
+                                                loadWork();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            case R.string.delete:
+                                new AlertDialog.Builder(WorkActivity.this)
+                                        .setTitle(title)
+                                        .setMessage(R.string.really_delete)
+                                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dbAdapter.open();
+                                                dbAdapter.selectDelete("work", workId);
+                                                dbAdapter.close();
+                                                loadWork();
+                                                updateListView();
+                                            }
+                                        })
+                                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {}
+                                        })
+                                        .show();
+                                break;
+                            default:
+                        }
+                    }
+                })
+                .show();
 
-        loadWork();
-        updateListView();
         return true;
     }
 
