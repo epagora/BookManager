@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-
     <item
-        android:id="@+id/option_author"
-        android:title="@string/author_list" />
-    <item
-        android:id="@+id/option_work"
+        android:id="@+id/main_option_work"
         android:title="@string/work_list" />
     <item
-        android:id="@+id/option_delete"
+        android:id="@+id/main_option_delete"
         android:title="@string/all_delete" />
 </menu>

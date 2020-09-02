@@ -72,7 +72,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     //オプションメニューを作成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu, menu);
+        getMenuInflater().inflate(R.menu.work_option_menu, menu);
         return true;
     }
 
@@ -89,7 +89,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
-            case R.id.option_delete: //データベースの中身をすべて削除
+            case R.id.option_work_all_delete: //データベースの中身をすべて削除
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
                         .setTitle(R.string.all_delete)
                         .setMessage(R.string.really_all_delete)

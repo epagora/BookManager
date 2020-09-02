@@ -9,7 +9,7 @@
     <string name="return_status">[未購入]に戻す</string>
     <string name="edit_text">追加項目を入力してください</string>
     <string name="edit_new_text">新しい項目名を入力してください</string>
-    <string name="button">追加</string>
+    <string name="add">追加</string>
     <string name="delete">削除</string>
     <string name="all_delete">全削除</string>
     <string name="rename">項目名を変更</string>
@@ -20,6 +20,7 @@
     <string name="cancel">キャンセル</string>
     <string name="currently_displayed">現在表示されています</string>
     <string name="already">すでに[既読]です</string>
+    <string name="add_specified">指定した巻まで追加</string>
 
     <string-array name="main_dialog_list">
         <item>@string/rename</item>

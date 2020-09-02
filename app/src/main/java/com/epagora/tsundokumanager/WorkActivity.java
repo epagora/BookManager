@@ -74,7 +74,11 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     //オプションメニューを作成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu, menu);
+        if (keyAuthorId == 0) {
+            getMenuInflater().inflate(R.menu.all_work_option_menu, menu);
+        }else {
+            getMenuInflater().inflate(R.menu.work_option_menu, menu);
+        }
         return true;
     }
 
@@ -82,21 +86,18 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.option_author: //著者一覧ページに移動
+            case R.id.work_option_author: //著者一覧ページに移動
+            case R.id.all_work_option_author:
                 intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.option_work: //作品一覧ページに移動、すでに作品一覧ページならトースト表示
-                if(keyAuthorId == 0) {
-                    Toast toast = Toast.makeText(this, R.string.currently_displayed, Toast.LENGTH_SHORT);
-                    toast.show();
-                }else {
-                    intent = new Intent(this,WorkActivity.class);
-                    intent.putExtra("authorId", 0);
-                    startActivity(intent);
-                }
+            case R.id.work_option_work: //作品一覧ページに移動、すでに作品一覧ページの場合はこの項目は表示されない
+                intent = new Intent(this,WorkActivity.class);
+                intent.putExtra("authorId", 0);
+                startActivity(intent);
                 break;
-            case R.id.option_delete: //データベースの中身をすべて削除
+            case R.id.work_option_delete: //データベースの中身をすべて削除
+            case R.id.all_work_option_delete:
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
                         .setTitle(R.string.all_delete)
                         .setMessage(R.string.really_all_delete)

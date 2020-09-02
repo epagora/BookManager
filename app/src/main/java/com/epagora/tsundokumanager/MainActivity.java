@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     //オプションメニューを作成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.option_menu, menu);
+        getMenuInflater().inflate(R.menu.main_option_menu, menu);
         return true;
     }
 
@@ -66,16 +66,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.option_author: //すでに著者一覧ページなのでトースト表示
-                Toast toast = Toast.makeText(this, R.string.currently_displayed, Toast.LENGTH_SHORT);
-                toast.show();
-                break;
-            case R.id.option_work: //作品一覧ページに移動
+            case R.id.main_option_work: //作品一覧ページに移動
                 intent = new Intent(this,WorkActivity.class);
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
-            case R.id.option_delete: //データベースの中身をすべて削除
+            case R.id.main_option_delete: //データベースの中身をすべて削除
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
                         .setTitle(R.string.all_delete)
                         .setMessage(R.string.really_all_delete)
