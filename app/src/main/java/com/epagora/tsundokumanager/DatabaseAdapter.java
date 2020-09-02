@@ -100,9 +100,10 @@ public class DatabaseAdapter {
         }
     }
 
+    //データベースのカラムを書き換える
     public void changeItemName(String dbTable, int id, String new_name) {
         String column = null;
-        switch (dbTable) {
+        switch (dbTable) { //引数dbTableでテーブルを指定し、columnに各項目のカラム名を代入
             case TABLE_A:
                 column = NAME_A;
                 break;

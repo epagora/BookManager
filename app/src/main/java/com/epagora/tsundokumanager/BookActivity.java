@@ -69,26 +69,28 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         listView.setOnItemLongClickListener(this);
     }
 
+    //オプションメニューを作成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.option_menu, menu);
         return true;
     }
 
+    //オプションメニューが選択された時の動作を定義
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.option_author:
+            case R.id.option_author: //著者一覧ページに移動
                 intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.option_work:
+            case R.id.option_work: //作品一覧ページに移動
                 intent = new Intent(this,WorkActivity.class);
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
-            case R.id.option_delete:
-                new AlertDialog.Builder(this)
+            case R.id.option_delete: //データベースの中身をすべて削除
+                new AlertDialog.Builder(this) //確認用のダイアログを表示
                         .setTitle(R.string.all_delete)
                         .setMessage(R.string.really_all_delete)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
@@ -146,18 +148,19 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         final EditText editNewText = layout.findViewById(R.id.editNewText);
 
         new AlertDialog.Builder(this)
+                .setTitle(bookNumber)
                 .setItems(R.array.book_dialog_list, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         switch (getResources().obtainTypedArray(R.array.book_dialog_list).getResourceId(i, -1)) {
-                            case R.string.return_status:
+                            case R.string.return_status: //ステータスを[未購入]に戻す
                                 dbAdapter.open();
                                 dbAdapter.changeStatus(bookId, 0);
                                 dbAdapter.close();
                                 loadBook();
                                 updateListView();
                                 break;
-                            case R.string.rename:
+                            case R.string.rename: //項目名を変更する
                                 new AlertDialog.Builder(BookActivity.this)
                                         .setTitle(bookNumber)
                                         .setView(layout)
@@ -177,7 +180,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                                         })
                                         .show();
                                 break;
-                            case R.string.delete:
+                            case R.string.delete: //項目を削除する
                                 new AlertDialog.Builder(BookActivity.this)
                                         .setTitle(bookNumber)
                                         .setMessage(R.string.really_delete)
@@ -203,15 +206,6 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 })
                 .show();
 
-//        bookItem = bookList.get(i);
-//        int bookId = bookItem.getBookId();
-//
-//        dbAdapter.open();
-//        dbAdapter.selectDelete("book", bookId);
-//        dbAdapter.close();
-//
-//        loadBook();
-//        updateListView();
         return true;
     }
 
@@ -261,7 +255,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         adapter.notifyDataSetChanged();
     }
 
-    //巻数テーブルの各要素（作品コード、巻数名、状態[未購入、未読、既読]）をフィールドに持つクラス
+    //巻数テーブルの各要素（巻数コード、作品コード、巻数名、状態[未購入、未読、既読]）をフィールドに持つクラス
     public class BookTableItem {
         protected int bookId;
         protected int workId;
