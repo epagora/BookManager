@@ -72,7 +72,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     //オプションメニューを作成
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.work_option_menu, menu);
+        getMenuInflater().inflate(R.menu.book_option_menu, menu);
         return true;
     }
 
@@ -80,16 +80,16 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.option_author: //著者一覧ページに移動
+            case R.id.book_option_author: //著者一覧ページに移動
                 intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
                 break;
-            case R.id.option_work: //作品一覧ページに移動
+            case R.id.book_option_work: //作品一覧ページに移動
                 intent = new Intent(this,WorkActivity.class);
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
-            case R.id.option_work_all_delete: //データベースの中身をすべて削除
+            case R.id.book_option_delete: //データベースの中身をすべて削除
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
                         .setTitle(R.string.all_delete)
                         .setMessage(R.string.really_all_delete)
