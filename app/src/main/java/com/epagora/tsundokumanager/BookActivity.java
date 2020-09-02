@@ -80,6 +80,8 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.book_option_add: //指定した巻までデータベースに追加
+                break;
             case R.id.book_option_author: //著者一覧ページに移動
                 intent = new Intent(this,MainActivity.class);
                 startActivity(intent);
