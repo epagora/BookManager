@@ -6,6 +6,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.Locale;
+
 //データベース操作用アダプタークラス
 //SQLiteOpenHelperを継承したDatabaseHelperクラスを内部クラスに持つ
 public class DatabaseAdapter {
@@ -53,7 +55,7 @@ public class DatabaseAdapter {
 
     //saveメソッドは引数の違いでテーブルを見分ける
     //著者テーブルに登録
-    public void save(String author_name) {
+    public void add(String author_name) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -68,7 +70,7 @@ public class DatabaseAdapter {
     }
 
     //作品テーブルに登録
-    public void save(String work_title, int author_id) {
+    public void add(String work_title, int author_id) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -84,7 +86,7 @@ public class DatabaseAdapter {
     }
 
     //巻数テーブルに登録
-    public void save(int work_id, String book_number, int status) {
+    public void add(int work_id, String book_number, int status) {
         db.beginTransaction();
         try {
             ContentValues values = new ContentValues();
@@ -92,6 +94,34 @@ public class DatabaseAdapter {
             values.put(NUMBER_B, book_number);
             values.put(STATUS_B, status);
             db.insert(TABLE_B, null, values);
+            db.setTransactionSuccessful();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+        }
+    }
+
+    //1からvolumeで指定された巻まで巻数テーブルに登録
+    public void addUpToSpecified(int work_id, int volume, int status) {
+        db.beginTransaction();
+        try {
+            ContentValues values = new ContentValues();
+            values.put(W_ID_B, work_id);
+            values.put(STATUS_B, status);
+
+            Locale locale = Locale.getDefault();
+            if(locale.equals(Locale.JAPAN)) {
+                for (int i = 1; i <= volume; i++) {
+                    values.put(NUMBER_B, i + "巻");
+                    db.insert(TABLE_B, null, values);
+                }
+            }else {
+                for (int i = 1; i <= volume; i++) {
+                    values.put(NUMBER_B, "volume " + i);
+                    db.insert(TABLE_B, null, values);
+                }
+            }
             db.setTransactionSuccessful();
         }catch (Exception e) {
             e.printStackTrace();

@@ -81,6 +81,26 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.book_option_add: //指定した巻までデータベースに追加
+                ConstraintLayout layout = (ConstraintLayout) LayoutInflater.from(this).inflate(R.layout.dialog_body, null);
+                final EditText editNewText = layout.findViewById(R.id.editNewText);
+                new AlertDialog.Builder(this)
+                        .setTitle(R.string.add_specified)
+                        .setView(layout)
+                        .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.addUpToSpecified(keyWorkId, Integer.parseInt(editNewText.getText().toString()), 0);
+                                dbAdapter.close();
+                                loadBook();
+                                updateListView();
+                            }
+                        })
+                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
                 break;
             case R.id.book_option_author: //著者一覧ページに移動
                 intent = new Intent(this,MainActivity.class);
@@ -217,7 +237,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
         editText = findViewById(R.id.editText);
 
         dbAdapter.open();
-        dbAdapter.save(keyWorkId, editText.getText().toString(), 0);
+        dbAdapter.add(keyWorkId, editText.getText().toString(), 0);
         dbAdapter.close();
 
         editText.getText().clear();

@@ -17,7 +17,6 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -212,7 +211,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
         editText = findViewById(R.id.editText);
 
         dbAdapter.open();
-        dbAdapter.save(editText.getText().toString(), keyAuthorId);
+        dbAdapter.add(editText.getText().toString(), keyAuthorId);
         dbAdapter.close();
 
         editText.getText().clear();

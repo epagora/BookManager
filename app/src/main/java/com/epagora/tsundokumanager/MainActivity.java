@@ -20,7 +20,6 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         editText = findViewById(R.id.editText);
 
         dbAdapter.open();
-        dbAdapter.save(editText.getText().toString());
+        dbAdapter.add(editText.getText().toString());
         dbAdapter.close();
 
         editText.getText().clear();
