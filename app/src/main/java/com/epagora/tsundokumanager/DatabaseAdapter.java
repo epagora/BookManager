@@ -207,21 +207,36 @@ public class DatabaseAdapter {
         }
     }
 
-    //任意の項目を削除
+    //任意の単一項目を削除
     //テーブルは引数で指定
     public void selectDelete(String dbTable, int id) {
         db.beginTransaction();
         try {
-            switch (dbTable) {
-                case TABLE_A:
-                    db.delete(TABLE_A, _ID_A + "=" + id, null);
-                    break;
-                case TABLE_W:
-                    db.delete(TABLE_W, _ID_W + "=" + id, null);
-                    break;
-                case TABLE_B:
-                    db.delete(TABLE_B, _ID_B + "=" + id, null);
-                    break;
+            db.delete(dbTable, "_id =" + id, null);
+            db.setTransactionSuccessful();
+        }catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            db.endTransaction();
+        }
+    }
+
+    //任意のページの項目をすべて削除
+    //テーブルは引数で指定
+    public void selectDeletePage(String dbTable, int id) {
+        db.beginTransaction();
+        try {
+            if(id == 0) {
+                db.delete(TABLE_W, null, null);
+            }else {
+                switch (dbTable) {
+                    case TABLE_W:
+                        db.delete(TABLE_W, A_ID_W + "=" + id, null);
+                        break;
+                    case TABLE_B:
+                        db.delete(TABLE_B, W_ID_B + "=" + id, null);
+                        break;
+                }
             }
             db.setTransactionSuccessful();
         }catch (Exception e) {

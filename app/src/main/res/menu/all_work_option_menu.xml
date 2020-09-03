@@ -6,6 +6,9 @@
         android:id="@+id/all_work_option_author"
         android:title="@string/author_list" />
     <item
+        android:id="@+id/all_work_option_delete_this"
+        android:title="@string/delete_all_this" />
+    <item
         android:id="@+id/all_work_option_delete"
-        android:title="@string/all_delete" />
+        android:title="@string/delete_all" />
 </menu>

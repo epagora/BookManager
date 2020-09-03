@@ -72,8 +72,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
             case R.id.main_option_delete: //データベースの中身をすべて削除
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
-                        .setTitle(R.string.all_delete)
-                        .setMessage(R.string.really_all_delete)
+                        .setTitle(R.string.delete_all)
+                        .setMessage(R.string.really_delete_all)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {

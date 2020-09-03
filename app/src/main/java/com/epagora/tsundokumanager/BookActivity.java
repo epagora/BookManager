@@ -83,20 +83,41 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.book_option_add: //指定した巻までデータベースに追加
                 ConstraintLayout layout = (ConstraintLayout) LayoutInflater.from(this).inflate(R.layout.dialog_body, null);
                 final EditText editNewText = layout.findViewById(R.id.editNewText);
+                editNewText.setHint(R.string.enter_int);
                 new AlertDialog.Builder(this)
                         .setTitle(R.string.add_specified)
                         .setView(layout)
-                        .setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.add_read, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 dbAdapter.open();
-                                dbAdapter.addUpToSpecified(keyWorkId, Integer.parseInt(editNewText.getText().toString()), 0);
-                                dbAdapter.close();
+                                try {
+                                    dbAdapter.addUpToSpecified(keyWorkId, Integer.parseInt(editNewText.getText().toString()), 2);
+                                }catch(NumberFormatException e) {
+                                    Toast.makeText(BookActivity.this, R.string.enter_int, Toast.LENGTH_SHORT).show();
+                                }finally {
+                                    dbAdapter.close();
+                                }
                                 loadBook();
                                 updateListView();
                             }
                         })
-                        .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.add_unpurchased, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                try {
+                                    dbAdapter.addUpToSpecified(keyWorkId, Integer.parseInt(editNewText.getText().toString()), 0);
+                                }catch(NumberFormatException e) {
+                                    Toast.makeText(BookActivity.this, R.string.enter_int, Toast.LENGTH_SHORT).show();
+                                }finally {
+                                    dbAdapter.close();
+                                }
+                                loadBook();
+                                updateListView();
+                            }
+                        })
+                        .setNeutralButton(R.string.cancel, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {}
                         })
@@ -111,10 +132,30 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
+            case R.id.book_option_delete_this: //開いている巻数ページのデータをすべて削除
+                new AlertDialog.Builder(this) //確認用のダイアログを表示
+                        .setTitle(R.string.delete_all_this)
+                        .setMessage(R.string.really_delete_all_this)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.selectDeletePage("book", keyWorkId);
+                                dbAdapter.close();
+                                loadBook();
+                                updateListView();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
+                break;
             case R.id.book_option_delete: //データベースの中身をすべて削除
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
-                        .setTitle(R.string.all_delete)
-                        .setMessage(R.string.really_all_delete)
+                        .setTitle(R.string.delete_all)
+                        .setMessage(R.string.really_delete_all)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -354,7 +395,7 @@ public class BookActivity extends AppCompatActivity implements AdapterView.OnIte
             textViewNumber.setText(bookItem.getBookNumber());
             switch (bookItem.getStatus()) {
                 case 0: //statusが0なら文字を灰色にして「未購入」表示
-                    textViewStatus.setText(R.string.non_purchased);
+                    textViewStatus.setText(R.string.unpurchased);
                     textViewStatus.setTextColor(Color.GRAY);
                     textViewNumber.setTextColor(Color.GRAY);
                     break;

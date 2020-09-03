@@ -2,23 +2,29 @@
 <resources>
     <string name="app_name">TsundokuManager</string>
     <string name="author_list">List of Authors</string>
-    <string name="non_purchased">Non Purchased</string>
+    <string name="unpurchased">Unpurchased</string>
     <string name="unread">Unread</string>
     <string name="read">Read</string>
-    <string name="edit_text">Please enter additional item</string>
+    <string name="edit_text">Please enter an additional item</string>
     <string name="work_list">List of Works</string>
-    <string name="all_delete">Delete all</string>
+    <string name="delete_all">Delete all data</string>
     <string name="delete">Delete</string>
     <string name="rename">Rename</string>
     <string name="really_delete">Do you really want to delete this?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string name="edit_new_text">Please enter new item name</string>
+    <string name="edit_new_text">Please enter a new item name</string>
     <string name="cancel">Cancel</string>
     <string name="return_status">Return to [Non Purchased]</string>
     <string name="currently_displayed">Currently displayed</string>
     <string name="already">Already [Read]</string>
-    <string name="really_all_delete">Do you really want to delete all?</string>
+    <string name="really_delete_all">Do you really want to delete all data?</string>
     <string name="add_specified">Add up to specified volume</string>
     <string name="add">Add</string>
+    <string name="enter_int">Please enter an integer</string>
+    <string name="add_read">Add with [Read]</string>
+    <string name="add_unpurchased">Add with [Unpurchased]</string>
+    <string name="delete_all_this">Delete all data on this page</string>
+    <string name="really_delete_all_this">Do you really want to delete all data on this page?</string>
+    <string name="really_delete_all_work">Do you really want to delete all data on this page? (Only authors data remains)</string>
 </resources>

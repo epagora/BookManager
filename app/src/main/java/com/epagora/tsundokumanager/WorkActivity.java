@@ -95,11 +95,32 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                 intent.putExtra("authorId", 0);
                 startActivity(intent);
                 break;
+            case R.id.work_option_delete_this: //開いている作品ページのデータをすべて削除
+            case R.id.all_work_option_delete_this:
+                new AlertDialog.Builder(this) //確認用のダイアログを表示
+                        .setTitle(R.string.delete_all_this)
+                        .setMessage(item.getItemId()==R.id.work_option_delete_this ? R.string.really_delete_all_this : R.string.really_delete_all_work)
+                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dbAdapter.open();
+                                dbAdapter.selectDeletePage("work", keyAuthorId);
+                                dbAdapter.close();
+                                loadWork();
+                                updateListView();
+                            }
+                        })
+                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {}
+                        })
+                        .show();
+                break;
             case R.id.work_option_delete: //データベースの中身をすべて削除
             case R.id.all_work_option_delete:
                 new AlertDialog.Builder(this) //確認用のダイアログを表示
-                        .setTitle(R.string.all_delete)
-                        .setMessage(R.string.really_all_delete)
+                        .setTitle(R.string.delete_all)
+                        .setMessage(R.string.really_delete_all)
                         .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
