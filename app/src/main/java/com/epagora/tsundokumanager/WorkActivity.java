@@ -196,6 +196,7 @@ public class WorkActivity extends AppCompatActivity implements AdapterView.OnIte
                                             public void onClick(DialogInterface dialogInterface, int i) {}
                                         })
                                         .show();
+                                editNewText.setText(title);
                                 break;
                             case R.string.delete: //項目を削除する
                                 new AlertDialog.Builder(WorkActivity.this)

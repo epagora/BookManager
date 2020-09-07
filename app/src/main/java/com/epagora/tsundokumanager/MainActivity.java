@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                                             public void onClick(DialogInterface dialogInterface, int i) {}
                                         })
                                         .show();
+                                editNewText.setText(name);
                                 break;
                             case R.string.delete: //項目を削除する
                                 new AlertDialog.Builder(MainActivity.this)
