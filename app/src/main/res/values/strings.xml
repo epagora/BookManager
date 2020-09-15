@@ -10,6 +10,7 @@
     <string name="edit_text">追加項目を入力してください</string>
     <string name="edit_new_text">新しい項目名を入力してください</string>
     <string name="add">追加</string>
+    <string name="sort_mode">並び替えモード</string>
     <string name="add_specified">指定した巻まで追加</string>
     <string name="add_read">[既読]で追加</string>
     <string name="add_unpurchased">[未購入]で追加</string>

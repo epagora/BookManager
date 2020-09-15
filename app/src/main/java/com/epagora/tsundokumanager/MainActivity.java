@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     ListView listView;
     EditText editText;
     Intent intent;
+    boolean sortMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.main_option_sort:
+                sortMode = true;
+                break;
             case R.id.main_option_work: //作品一覧ページに移動
                 intent = new Intent(this,WorkActivity.class);
                 intent.putExtra("authorId", 0);

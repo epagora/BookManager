@@ -27,4 +27,5 @@
     <string name="delete_all_this">Delete all data on this page</string>
     <string name="really_delete_all_this">Do you really want to delete all data on this page?</string>
     <string name="really_delete_all_work">Do you really want to delete all data on this page? (Only authors data remains)</string>
+    <string name="sort_mode">Sort mode</string>
 </resources>
